@@ -13,7 +13,7 @@ from rewards import PRISONER_REWARDS
 
 df = pd.read_csv("resources/lasftm_asia/lastfm_asia_edges.csv")
 
-cut_vertices = 1280
+cut_vertices = 8000
 
 edge_list = [(row['node_1'], row['node_2']) for _, row in df.iterrows()
              if row['node_1'] < cut_vertices and row['node_2'] < cut_vertices]
@@ -25,6 +25,8 @@ for u, v in edge_list:
 sub_graph = sorted(nx.connected_components(G), key=len)[-1]
 
 num_vertices = len(sub_graph)
+
+print("NUM VERTICES: ", num_vertices)
 
 mapper = {}
 idx = 0

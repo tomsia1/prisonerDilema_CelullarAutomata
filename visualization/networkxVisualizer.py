@@ -24,9 +24,9 @@ class NetworkxVisualizer(VisualizerInterface):
                     added_self_loops.add(u.idx)
                     self.graph.add_edge(u.idx, v.idx)
 
-        self.pos = nx.spring_layout(self.graph, seed=0)
+        self.pos = nx.drawing.nx_agraph.graphviz_layout(self.graph, 'sfdp', args="-Gdefaultdist=50")
 
-        self.node_size = [15] * len(graph)
+        self.node_size = [5] * len(graph)
 
     def draw(self, save_path=None, show=True):
         color_map = []

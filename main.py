@@ -9,9 +9,9 @@ def main(config):
 
 if __name__ == '__main__':
 
-    # from configurations.configuration_set.config1 import config1
-    from configurations.configuration_set.config_lasftm_asia_1 import config_lasftm_asia_1
+    # from configurations.configuration_set.config1 import config1 as config
+    from configurations.configuration_set.config_lasftm_asia_1 import config_lasftm_asia_1 as config
 
-    main(config_lasftm_asia_1)
+    main(config)
 
 
