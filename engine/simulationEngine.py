@@ -3,6 +3,7 @@ import shutil
 from collections import Counter
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
+import imageio
 
 
 class SimulationEngine:
@@ -67,7 +68,7 @@ class SimulationEngine:
         strategy_count_per_epoch = {name: [] for name in self.strategy_dict}
         self._update_strategy_count(strategy_count_per_epoch)
         
-        self.visualizer.draw(pictures_save_path / "_start.png", False)
+        self.visualizer.draw(pictures_save_path / "epoch_0.png", False)
 
         for i in range(epochs):
             print("EPOCH: {}".format(i))
@@ -91,7 +92,12 @@ class SimulationEngine:
             self._update_strategy_count(strategy_count_per_epoch)
 
             if i % visualizer_interval == 0:
-                name = "epoch_{}.png".format(i)
+                name = "epoch_{}.png".format(i+1)
                 self.visualizer.draw(pictures_save_path / name, False)
+
+        images = []        
+        for i in range(epochs+1):
+            images.append(imageio.imread(pictures_save_path / f'epoch_{i}.png'))
+        imageio.mimsave(save_path / 'simulation.gif', images, duration=0.3)
 
         self._plot_strategy_count(plots_save_path / 'strategy_count.png', strategy_count_per_epoch)
