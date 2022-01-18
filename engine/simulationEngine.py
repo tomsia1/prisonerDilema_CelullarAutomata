@@ -1,5 +1,8 @@
 import os
 import shutil
+from collections import Counter
+import matplotlib.pyplot as plt
+import matplotlib.patches as patches
 
 
 class SimulationEngine:
@@ -8,6 +11,14 @@ class SimulationEngine:
         self.visualizer = visualizer
 
         self.rewards = rewards
+        
+        # name : color
+        self.strategy_dict = {}
+        for u in self.graph:
+            r, g, b = u.strategy.get_marker()
+            self.strategy_dict[u.strategy.get_name()] = (r / 255, g / 255, b / 255)
+
+        self.patches = [patches.Patch(color=colour, label=label) for label, colour in self.strategy_dict.items()]
 
     def play(self, u, v, num_rounds, hist_len):
         u_history = []
@@ -26,15 +37,37 @@ class SimulationEngine:
             v_history.append(v_action)
             v_history = v_history[-hist_len:]
 
+    def _update_strategy_count(self, count_dict):
+        counter = Counter()
+        for u in self.graph:
+            counter[u.strategy.get_name()] += 1
+        
+        for name, count in counter.items():
+            count_dict[name].append(count)
+
+    def _plot_strategy_count(self, save_path, strategy_count_per_epoch):
+        for name, count in strategy_count_per_epoch.items():
+            color = self.strategy_dict[name]
+
+            plt.plot(count, color=color)
+        
+        lgd = plt.legend(handles=self.patches, bbox_to_anchor=(1.0, 1.1), loc=2)
+        plt.savefig(save_path, bbox_extra_artists=(lgd,), bbox_inches='tight')
+
     def run(self, num_rounds, epochs, visualizer_interval, save_path):
 
         shutil.rmtree(save_path, ignore_errors=True)
+        
+        pictures_save_path = save_path / 'pictures'
+        plots_save_path = save_path / 'plots'
 
-        print("START RUN")
+        os.makedirs(pictures_save_path)
+        os.makedirs(plots_save_path)
 
-        os.makedirs(save_path, exist_ok=True)
-
-        self.visualizer.draw(save_path / "_start.png", False)
+        strategy_count_per_epoch = {name: [] for name in self.strategy_dict}
+        self._update_strategy_count(strategy_count_per_epoch)
+        
+        self.visualizer.draw(pictures_save_path / "_start.png", False)
 
         for i in range(epochs):
             print("EPOCH: {}".format(i))
@@ -55,6 +88,10 @@ class SimulationEngine:
             for u in to_update:
                 u.update()
 
+            self._update_strategy_count(strategy_count_per_epoch)
+
             if i % visualizer_interval == 0:
                 name = "epoch_{}.png".format(i)
-                self.visualizer.draw(save_path / name, False)
+                self.visualizer.draw(pictures_save_path / name, False)
+
+        self._plot_strategy_count(plots_save_path / 'strategy_count.png', strategy_count_per_epoch)
