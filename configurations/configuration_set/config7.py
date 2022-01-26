@@ -14,7 +14,7 @@ from rewards import PRISONER_REWARDS
 
 np.random.seed(0)
 
-neighbourhood = Neighbourhood.MANHATTAN2
+neighbourhood = Neighbourhood.NEUMANN
 
 mapping = [AlwaysCooperate(), AlwaysDefect(), TitForTat(), Pavlov()]
 
@@ -22,12 +22,12 @@ r = np.random.randint(0, 4, (100, 100))
 strategy_grid = np.empty(r.shape, object)
 for i, row in enumerate(r):
     for j, elm in enumerate(row):
-        strategy_grid[i, j] = AlwaysCooperate()
+        strategy_grid[i, j] = TitForTat()
 
-for x in range(-2, 3):
-    for y in range(-2, 3):
-        strategy_grid[50+x, 50+y] = AlwaysDefect()
-# strategy_grid[50, 50] = AlwaysDefect()
+# for x in range(-2, 3):
+#     for y in range(-2, 3):
+#         strategy_grid[50+x, 50+y] = AlwaysDefect()
+strategy_grid[50, 50] = AlwaysDefect()
 
 graph_config = {
     'neighbourhood': neighbourhood,
@@ -37,12 +37,12 @@ graph_config = {
 graph = GridGraph().build(graph_config)
 visualizer = GridVisualizer(graph)
 
-config6 = Configuration(
+config7 = Configuration(
     graph=graph,
     visualizer=visualizer,
     visualizer_interval=1,
-    num_round_per_play=2,
-    num_epochs=50,
+    num_round_per_play=5,
+    num_epochs=10,
     rewards=PRISONER_REWARDS,
-    save_path=Path("results/res6")
+    save_path=Path("results/res7")
 )

@@ -47,7 +47,7 @@ config3 = Configuration(
     visualizer=visualizer,
     visualizer_interval=1,
     num_round_per_play=2,
-    num_epochs=70,
+    num_epochs=100,
     rewards=PRISONER_REWARDS,
     save_path=Path("results/res3")
 )

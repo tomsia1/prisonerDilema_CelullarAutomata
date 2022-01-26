@@ -37,9 +37,9 @@ for u in sub_graph:
 
 edge_list = [(mapper[u], mapper[v]) for u, v in edge_list if u in mapper and v in mapper]
 
-quarter = int(num_vertices / 6)
-strategies = [AlwaysCooperate()] * 2 * quarter + [AlwaysDefect()] * 2 * quarter +\
-                [Pavlov()] * quarter + [TitForTat()] * (num_vertices - 5*quarter)
+quarter = int(num_vertices / 9)
+strategies = [AlwaysCooperate()] * 3 * quarter + [AlwaysDefect()] * 3 * quarter +\
+                [Pavlov()] * 2 * quarter + [TitForTat()] * (num_vertices - 8*quarter)
 
 graph_config = {
     'strategies': strategies,
@@ -50,12 +50,12 @@ graph_config = {
 graph = NetworkxGraph().build(graph_config)
 visualizer = NetworkxVisualizer(graph)
 
-config_lasftm_asia_2_small = Configuration(
+config_lasftm_asia_3_small = Configuration(
     graph=graph,
     visualizer=visualizer,
     visualizer_interval=1,
     num_round_per_play=5,
     num_epochs=30,
     rewards=PRISONER_REWARDS,
-    save_path=Path("results/res_lasftm_asia_2_small")
+    save_path=Path("results/res_lasftm_asia_3_small")
 )
